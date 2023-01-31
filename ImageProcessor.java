@@ -4,7 +4,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class ImageProcessor {
+    /// <summary>
+    /// Image Processor
+    /// Processes image in the following ways:
+    /// 1. Turn RGB to Grayscale
+    /// 2. Threshold
+    /// </summary>
     public static void main(String[] args) throws IOException {
+        // Image size
         int width = 1920;
         int height = 1440;
 
