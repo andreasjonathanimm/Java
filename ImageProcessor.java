@@ -3,13 +3,14 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+/**
+* Processes image in the following ways:<br>
+* 1. Turn RGB to Grayscale<br>
+* 2. Threshold
+* @return .png file
+*/
 public class ImageProcessor {
-    /// <summary>
-    /// Image Processor
-    /// Processes image in the following ways:
-    /// 1. Turn RGB to Grayscale
-    /// 2. Threshold
-    /// </summary>
+
     public static void main(String[] args) throws IOException {
         // Image size
         int width = 1920;
@@ -45,11 +46,16 @@ public class ImageProcessor {
                 // avg = (avg % 2) * 255;
                 // r = g = b = avg;
 
-                // Threshold
                 int threshold = 100;
-                r = (r > threshold) ? 255 : 0;
-                g = (g > threshold) ? 255 : 0;
-                b = (b > threshold) ? 255 : 0;
+                // // Threshold RGB
+                // r = (r > threshold) ? 255 : 0;
+                // g = (g > threshold) ? 255 : 0;
+                // b = (b > threshold) ? 255 : 0;
+                
+                // Threshold Grayscale
+                int avg = (r + g + b) / 3;
+                avg = (avg > threshold) ? 255 : 0;
+                r = g = b = avg;
 
                 // Set new RGB value
                 p = ((a) << 24) | (r << 16) | (g << 8) | b;
