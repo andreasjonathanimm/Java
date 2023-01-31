@@ -15,7 +15,7 @@ public class ImageProcessor {
 
         // Reads an image from a file
         File inputFile = new File(
-            "D:/Jojo_Data/java/Logo Unsri - Lalu Ahmad.png" // input file path
+            "./Logo Unsri - Lalu Ahmad.png" // input file path
         );
         image = ImageIO.read(inputFile);
         System.out.println("Reading complete.");
@@ -32,9 +32,17 @@ public class ImageProcessor {
                 int r = (p >> 16) & 0xFF;
                 int g = (p >> 8) & 0xFF;
                 int b = p & 0xFF;
-                int avg = (r + g + b) / 3;
-                avg = (avg % 2) * 255;
-                r = g = b = avg;
+
+                // // Turn RGB to Grayscale
+                // int avg = (r + g + b) / 3;
+                // avg = (avg % 2) * 255;
+                // r = g = b = avg;
+
+                // Threshold
+                int threshold = 100;
+                r = (r > threshold) ? 255 : 0;
+                g = (g > threshold) ? 255 : 0;
+                b = (b > threshold) ? 255 : 0;
 
                 // Set new RGB value
                 p = ((a) << 24) | (r << 16) | (g << 8) | b;
@@ -44,7 +52,7 @@ public class ImageProcessor {
 
         // Writes an image to a file
         File outputFile = new File(
-            "D:/Jojo_Data/java/test.png" // output file path
+            "./test.png" // output file path
         );
         ImageIO.write(image, "png", outputFile);
         System.out.println("Writing complete.");
