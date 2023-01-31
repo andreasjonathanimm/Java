@@ -47,6 +47,7 @@ public class ImageProcessor {
                 // avg = (avg % 2) * 255;
                 // r = g = b = avg;
 
+                // Threshold methods
                 int threshold = 100;
                 // // Threshold RGB
                 // r = (r > threshold) ? 255 : 0;
