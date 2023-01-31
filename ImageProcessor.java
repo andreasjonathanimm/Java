@@ -15,7 +15,7 @@ public class ImageProcessor {
 
         // Reads an image from a file
         File inputFile = new File(
-            "./Logo Unsri - Lalu Ahmad.png" // input file path
+            "./image.png" // input file path
         );
         image = ImageIO.read(inputFile);
         System.out.println("Reading complete.");
