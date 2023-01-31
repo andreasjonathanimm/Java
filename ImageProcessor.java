@@ -6,7 +6,8 @@ import javax.imageio.ImageIO;
 /**
 * Processes image in the following ways:<br>
 * 1. Turn RGB to Grayscale<br>
-* 2. Threshold
+* 2. Threshold RGB<br>
+* 3. Threshold Grayscale<br>
 * @return .png file
 */
 public class ImageProcessor {
