@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 * 4. Threshold Truncate<br>
 * 5. Threshold To Zero<br>
 * 6. Threshold To Zero Inverse<br>
+* 7. Otsu Threshold
 * @return .png file
 */
 public class ImageProcessor {
@@ -73,6 +74,85 @@ public class ImageProcessor {
         return avg;
     }
 
+    /**
+     * Thresholds the Grayscale value of an image using the Otsu method
+     * @return 0 or 255
+     */
+    public static BufferedImage otsuThreshold(BufferedImage image, int width, int height) {
+        int[] histogram = new int[256];
+        int total = width * height;
+
+        // Calculate histogram
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int p = image.getRGB(i, j);
+
+                int r = (p >> 16) & 0xFF;
+                int g = (p >> 8) & 0xFF;
+                int b = p & 0xFF;
+
+                int avg = (r + g + b) / 3;
+                histogram[avg]++;
+            }
+        }
+
+        // Calculate sum
+        float sum = 0;
+        for (int i = 0; i < 256; i++) {
+            sum += i * histogram[i];
+        }
+
+        float sumB = 0;
+        int wB = 0;
+        int wF = 0;
+
+        float varMax = 0;
+        int threshold = 0;
+
+        for (int i = 0; i < 256; i++) {
+            wB += histogram[i];
+            if (wB == 0) {
+                continue;
+            }
+
+            wF = total - wB;
+            if (wF == 0) {
+                break;
+            }
+
+            sumB += (float) (i * histogram[i]);
+            float mB = sumB / wB;
+            float mF = (sum - sumB) / wF;
+
+            float varBetween = (float) wB * (float) wF * (mB - mF) * (mB - mF);
+
+            if (varBetween > varMax) {
+                varMax = varBetween;
+                threshold = i;
+            }
+        }
+
+        // Threshold the image
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int p = image.getRGB(i, j);
+
+                int a = (p >> 24) & 0xFF;
+                int r = (p >> 16) & 0xFF;
+                int g = (p >> 8) & 0xFF;
+                int b = p & 0xFF;
+
+                int avg = (r + g + b) / 3;
+                avg = (avg > threshold) ? 255 : 0;
+
+                p = (a << 24) | (avg << 16) | (avg << 8) | avg;
+
+                image.setRGB(i, j, p);
+            }
+        }
+    return image;
+    }
+
     public static void main(String[] args) throws IOException {
         // Image size
         int width = 1920;
@@ -126,6 +206,9 @@ public class ImageProcessor {
                 image.setRGB(i, j, p);
             }
         }
+
+        // Otsu Threshold
+        image = otsuThreshold(image, width, height);
 
         // Writes an image to a file
         File outputFile = new File(
