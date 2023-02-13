@@ -4,6 +4,11 @@ public class Segitiga {
     protected double alas;
     protected double tinggi;
 
+    public Segitiga() {
+        alas = 3;
+        tinggi = 4;
+    }
+
     public Segitiga(double alas, double tinggi) {
         this.alas = alas;
         this.tinggi = tinggi;
