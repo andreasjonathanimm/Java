@@ -7,6 +7,10 @@ public class Lingkaran {
         this.jariJari = jariJari;
     }
 
+    public Lingkaran() {
+        jariJari = ((int) (Math.random() * 11)) + 1;
+    }
+
     public double getJariJari() {
         return jariJari;
     }
@@ -16,11 +20,11 @@ public class Lingkaran {
     }
 
     public double getLuas() {
-        return Math.PI * jariJari * jariJari;
+        return Math.round(Math.PI * jariJari * jariJari);
     }
 
     public double getKeliling() {
-        return 2 * Math.PI * jariJari;
+        return Math.round(2 * Math.PI * jariJari);
     }
 
     public void print() {
@@ -28,5 +32,6 @@ public class Lingkaran {
         System.out.println("Jari-jari: " + jariJari);
         System.out.println("Luas: " + getLuas());
         System.out.println("Keliling: " + getKeliling());
+        System.out.println();
     }
 }

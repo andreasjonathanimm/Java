@@ -2,22 +2,25 @@ package pplbo_p2;
 
 public class PPLBO_P2 {
     public static void main(String[] args) {
-        Segitiga segitiga = new Segitiga(3, 4);
-        segitiga.setAlas(6);
-        segitiga.setTinggi(8);
+        Segitiga segitiga = new Segitiga();
         segitiga.print();
 
-        PersegiPanjang persegiPanjang = new PersegiPanjang(3, 4);
-        persegiPanjang.setPanjang(6);
-        persegiPanjang.setLebar(8);
+        SegitigaSembarang segitigaSembarang = new SegitigaSembarang();
+        segitigaSembarang.print();
+
+        SegitigaSamaSisi segitigaSamaSisi = new SegitigaSamaSisi();
+        segitigaSamaSisi.print();
+
+        SegitigaSamaKaki segitigaSamaKaki = new SegitigaSamaKaki();
+        segitigaSamaKaki.print();
+
+        PersegiPanjang persegiPanjang = new PersegiPanjang();
         persegiPanjang.print();
 
-        Persegi persegi = new Persegi(3);
-        persegi.setSisi(6);
+        Persegi persegi = new Persegi();
         persegi.print();
 
-        Lingkaran lingkaran = new Lingkaran(3);
-        lingkaran.setJariJari(6);
+        Lingkaran lingkaran = new Lingkaran();
         lingkaran.print();
     }
 }

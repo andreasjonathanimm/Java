@@ -7,6 +7,10 @@ public class Persegi {
         this.sisi = sisi;
     }
 
+    public Persegi() {
+        sisi = ((int) (Math.random() * 11)) + 1;
+    }
+
     public double getSisi() {
         return sisi;
     }
@@ -28,5 +32,6 @@ public class Persegi {
         System.out.println("Sisi: " + sisi);
         System.out.println("Luas: " + getLuas());
         System.out.println("Keliling: " + getKeliling());
+        System.out.println();
     }
 }

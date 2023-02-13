@@ -5,8 +5,12 @@ public class SegitigaSamaKaki extends Segitiga {
         super(alas, tinggi);
     }
 
+    public SegitigaSamaKaki() {
+        super();
+    }
+
     @Override
     public double getKeliling() {
-        return alas + 2 * Math.sqrt(Math.pow(alas / 2, 2) + Math.pow(tinggi, 2));
+        return Math.round(alas + 2 * Math.sqrt(Math.pow(alas / 2, 2) + Math.pow(tinggi, 2)));
     }
 }

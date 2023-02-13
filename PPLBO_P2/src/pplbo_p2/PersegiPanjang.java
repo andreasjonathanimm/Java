@@ -9,6 +9,11 @@ public class PersegiPanjang {
         this.lebar = lebar;
     }
 
+    public PersegiPanjang() {
+        panjang = ((int) (Math.random() * 11)) + 1;
+        lebar = ((int) (Math.random() * 11)) + 1;
+    }
+
     public double getPanjang() {
         return panjang;
     }
@@ -39,5 +44,6 @@ public class PersegiPanjang {
         System.out.println("Lebar: " + lebar);
         System.out.println("Luas: " + getLuas());
         System.out.println("Keliling: " + getKeliling());
+        System.out.println();
     }
 }
