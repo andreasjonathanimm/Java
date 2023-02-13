@@ -153,6 +153,58 @@ public class ImageProcessor {
     return image;
     }
 
+    /**
+     * Extracts the RGB values of an image and spreads them into single Grayscale values
+     * @return .png file
+     */
+    public static BufferedImage prototypeExtractRGBtoSingleGrayBar(BufferedImage image, int width, int height) {
+        BufferedImage grayImage = new BufferedImage(width * 4, height * 4, BufferedImage.TYPE_BYTE_GRAY);
+        // Extract the RGB values of the image
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int p = image.getRGB(i, j);
+
+                int a = (p >> 24) & 0xFF;
+                int r = (p >> 16) & 0xFF;
+                int g = (p >> 8) & 0xFF;
+                int b = p & 0xFF;
+
+                // Spread the RGB value into single Grayscale values
+                grayImage.setRGB(i * 4, j * 4, a);
+                grayImage.setRGB(i * 4 + 1, j * 4, r);
+                grayImage.setRGB(i * 4 + 2, j * 4, g);
+                grayImage.setRGB(i * 4 + 3, j * 4, b);
+            }
+        }
+        return grayImage;
+    }
+
+    /**
+     * Mixes the single Grayscale values of an image into a single RGB value
+     * @param image
+     * @param width
+     * @param height
+     * @return
+     */
+    public static BufferedImage prototypeSingleGrayBartoRGB(BufferedImage image, int width, int height) {
+        BufferedImage rgbImage = new BufferedImage(width / 4, height / 4, BufferedImage.TYPE_INT_ARGB);
+        // Extract the RGB values of the image
+        for (int i = 0; i < width; i += 4) {
+            for (int j = 0; j < height; j += 4) {
+                // Fix getting values from grayscale
+                int a = (image.getRGB(i, j));
+                int r = image.getRGB(i + 1, j);
+                int g = image.getRGB(i + 2, j);
+                int b = image.getRGB(i + 3, j);
+
+                int p = (a << 24) | (r << 16) | (g << 8) | b;
+
+                rgbImage.setRGB(i / 4, j / 4, p);
+            }
+        }
+        return rgbImage;
+    }
+
     public static void main(String[] args) throws IOException {
         // Image size
         int width = 1920;
@@ -164,8 +216,11 @@ public class ImageProcessor {
         );;
 
         // Reads an image from a file
+        // File inputFile = new File(
+        //     "./image.png" // input file path
+        // );
         File inputFile = new File(
-            "./image.png" // input file path
+            "./test.png" // input file path
         );
         image = ImageIO.read(inputFile);
         System.out.println("Reading complete.");
@@ -207,12 +262,21 @@ public class ImageProcessor {
             }
         }
 
-        // Otsu Threshold
-        image = otsuThreshold(image, width, height);
+        // // Otsu Threshold
+        // image = otsuThreshold(image, width, height);
+
+        // // Prototype: Extract RGB to single Grayscale bar
+        // image = prototypeExtractRGBtoSingleGrayBar(image, width, height);
+
+        // Prototype: Single Grayscale bar to RGB
+        image = prototypeSingleGrayBartoRGB(image, width, height);
 
         // Writes an image to a file
+        // File outputFile = new File(
+        //     "./test.png" // output file path
+        // );
         File outputFile = new File(
-            "./test.png" // output file path
+            "./test2.png" // output file path
         );
         ImageIO.write(image, "png", outputFile);
         System.out.println("Writing complete.");
