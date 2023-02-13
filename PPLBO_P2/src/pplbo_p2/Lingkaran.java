@@ -1,6 +1,6 @@
 package pplbo_p2;
 
-public class Lingkaran {
+public class Lingkaran extends BangunDatar {
     private double jariJari;
 
     public Lingkaran(double jariJari) {
@@ -19,19 +19,19 @@ public class Lingkaran {
         this.jariJari = jariJari;
     }
 
+    @Override
     public double getLuas() {
         return Math.round(Math.PI * jariJari * jariJari);
     }
 
+    @Override
     public double getKeliling() {
         return Math.round(2 * Math.PI * jariJari);
     }
 
     public void print() {
-        System.out.println("Lingkaran");
+        super.print();
         System.out.println("Jari-jari: " + jariJari);
-        System.out.println("Luas: " + getLuas());
-        System.out.println("Keliling: " + getKeliling());
         System.out.println();
     }
 }

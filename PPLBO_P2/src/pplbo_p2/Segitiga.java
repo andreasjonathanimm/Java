@@ -1,6 +1,6 @@
 package pplbo_p2;
 
-public class Segitiga {
+public class Segitiga extends BangunDatar {
     protected double alas;
     protected double tinggi;
 
@@ -30,20 +30,21 @@ public class Segitiga {
         this.tinggi = tinggi;
     }
 
+    @Override
     public double getLuas() {
         return Math.round((alas * tinggi) / 2);
     }
 
+    @Override
     public double getKeliling() {
         return Math.round(alas + tinggi + Math.sqrt(Math.pow(alas, 2) + Math.pow(tinggi, 2)));
     }
 
+    @Override
     public void print() {
-        System.out.println(getClass().getSimpleName());
+        super.print();
         System.out.println("Alas: " + alas);
         System.out.println("Tinggi: " + tinggi);
-        System.out.println("Luas: " + getLuas());
-        System.out.println("Keliling: " + getKeliling());
         System.out.println();
     }
 }

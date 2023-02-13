@@ -1,6 +1,6 @@
 package pplbo_p2;
 
-public class PersegiPanjang {
+public class PersegiPanjang extends BangunDatar {
     private double panjang;
     private double lebar;
 
@@ -30,20 +30,20 @@ public class PersegiPanjang {
         this.lebar = lebar;
     }
 
+    @Override
     public double getLuas() {
         return panjang * lebar;
     }
 
+    @Override
     public double getKeliling() {
         return 2 * (panjang + lebar);
     }
 
     public void print() {
-        System.out.println("Persegi Panjang");
+        super.print();
         System.out.println("Panjang: " + panjang);
         System.out.println("Lebar: " + lebar);
-        System.out.println("Luas: " + getLuas());
-        System.out.println("Keliling: " + getKeliling());
         System.out.println();
     }
 }

@@ -1,6 +1,6 @@
 package pplbo_p2;
 
-public class Persegi {
+public class Persegi extends BangunDatar {
     private double sisi;
 
     public Persegi(double sisi) {
@@ -19,19 +19,19 @@ public class Persegi {
         this.sisi = sisi;
     }
 
+    @Override
     public double getLuas() {
         return sisi * sisi;
     }
 
+    @Override
     public double getKeliling() {
         return 4 * sisi;
     }
 
     public void print() {
-        System.out.println("Persegi");
+        super.print();
         System.out.println("Sisi: " + sisi);
-        System.out.println("Luas: " + getLuas());
-        System.out.println("Keliling: " + getKeliling());
         System.out.println();
     }
 }
