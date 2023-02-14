@@ -154,6 +154,50 @@ public class ImageProcessor {
     }
 
     /**
+     * Convolutes the image using CNN with a given kernel
+     * @return .png file
+     */
+    public static BufferedImage convolute(BufferedImage image, int width, int height, int[][] kernel) {
+        BufferedImage tempImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        int kernelWidth = kernel.length;
+        int kernelHeight = kernel[0].length;
+
+        // Convolute the image
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int sumR = 0;
+                int sumG = 0;
+                int sumB = 0;
+
+                for (int m = 0; m < kernelWidth; m++) {
+                    for (int n = 0; n < kernelHeight; n++) {
+                        int imageI = (i - kernelWidth / 2 + m + width) % width;
+                        int imageJ = (j - kernelHeight / 2 + n + height) % height;
+
+                        int p = image.getRGB(imageI, imageJ);
+
+                        int r = (p >> 16) & 0xFF;
+                        int g = (p >> 8) & 0xFF;
+                        int b = p & 0xFF;
+
+                        sumR += r * kernel[m][n];
+                        sumG += g * kernel[m][n];
+                        sumB += b * kernel[m][n];
+                    }
+                }
+
+                int avgR = sumR / (kernelWidth * kernelHeight);
+                int avgG = sumG / (kernelWidth * kernelHeight);
+                int avgB = sumB / (kernelWidth * kernelHeight);
+
+                int p = (avgR << 16) | (avgG << 8) | avgB;
+                tempImage.setRGB(i, j, p);
+            }
+        }
+        return tempImage;
+    }
+
+    /**
      * Extracts the RGB values of an image and spreads them into single Grayscale values
      * @return .png file
      */
