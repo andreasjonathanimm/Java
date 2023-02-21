@@ -11,7 +11,8 @@ import javax.imageio.ImageIO;
 * 4. Threshold Truncate<br>
 * 5. Threshold To Zero<br>
 * 6. Threshold To Zero Inverse<br>
-* 7. Otsu Threshold
+* 7. Otsu Threshold<br>
+* 8. Convolutes the image using CNN with a given kernel<br>
 * @return .png file
 */
 public class ImageProcessor {
@@ -188,6 +189,58 @@ public class ImageProcessor {
             }
         }
         return image;
+    }
+
+    /**
+     * Extracts the RGB values of an image and spreads them into single Grayscale values
+     * @return .png file
+     */
+    public static BufferedImage prototypeExtractRGBtoSingleGrayBar(BufferedImage image, int width, int height) {
+        BufferedImage grayImage = new BufferedImage(width * 4, height * 4, BufferedImage.TYPE_BYTE_GRAY);
+        // Extract the RGB values of the image
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int p = image.getRGB(i, j);
+
+                int a = (p >> 24) & 0xFF;
+                int r = (p >> 16) & 0xFF;
+                int g = (p >> 8) & 0xFF;
+                int b = p & 0xFF;
+
+                // Spread the RGB value into single Grayscale values
+                grayImage.setRGB(i * 4, j * 4, a);
+                grayImage.setRGB(i * 4 + 1, j * 4, r);
+                grayImage.setRGB(i * 4 + 2, j * 4, g);
+                grayImage.setRGB(i * 4 + 3, j * 4, b);
+            }
+        }
+        return grayImage;
+    }
+
+    /**
+     * Mixes the single Grayscale values of an image into a single RGB value
+     * @param image
+     * @param width
+     * @param height
+     * @return
+     */
+    public static BufferedImage prototypeSingleGrayBartoRGB(BufferedImage image, int width, int height) {
+        BufferedImage rgbImage = new BufferedImage(width / 4, height / 4, BufferedImage.TYPE_INT_ARGB);
+        // Extract the RGB values of the image
+        for (int i = 0; i < width; i += 4) {
+            for (int j = 0; j < height; j += 4) {
+                // Fix getting values from grayscale
+                int a = (image.getRGB(i, j));
+                int r = image.getRGB(i + 1, j);
+                int g = image.getRGB(i + 2, j);
+                int b = image.getRGB(i + 3, j);
+
+                int p = (a << 24) | (r << 16) | (g << 8) | b;
+
+                rgbImage.setRGB(i / 4, j / 4, p);
+            }
+        }
+        return rgbImage;
     }
 
     public static void main(String[] args) throws IOException {
