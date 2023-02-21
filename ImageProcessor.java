@@ -157,96 +157,37 @@ public class ImageProcessor {
      * Convolutes the image using CNN with a given kernel
      * @return .png file
      */
-    public static BufferedImage convolute(BufferedImage image, int width, int height, int[][] kernel) {
-        BufferedImage tempImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        int kernelWidth = kernel.length;
-        int kernelHeight = kernel[0].length;
+    public static BufferedImage CNN(BufferedImage image, int width, int height, int[][] kernel) {
+        int kWidth = kernel.length;
+        int kHeight = kernel[0].length;
 
-        // Convolute the image
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                int sumR = 0;
-                int sumG = 0;
-                int sumB = 0;
+                int sumR = 0, sumG = 0, sumB = 0;
+                for (int m = 0; m < kWidth; m++) {
+                    for (int n = 0; n < kHeight; n++) {
+                        int imageI = (i - kWidth / 2 + m + width) % width;
+                        int imageJ = (j - kHeight / 2 + n + height) % height;
+                        int pixel = image.getRGB(imageI, imageJ);
 
-                for (int m = 0; m < kernelWidth; m++) {
-                    for (int n = 0; n < kernelHeight; n++) {
-                        int imageI = (i - kernelWidth / 2 + m + width) % width;
-                        int imageJ = (j - kernelHeight / 2 + n + height) % height;
-
-                        int p = image.getRGB(imageI, imageJ);
-
-                        int r = (p >> 16) & 0xFF;
-                        int g = (p >> 8) & 0xFF;
-                        int b = p & 0xFF;
+                        int r = (pixel >> 16) & 0xFF;
+                        int g = (pixel >> 8) & 0xFF;
+                        int b = pixel & 0xFF;
 
                         sumR += r * kernel[m][n];
                         sumG += g * kernel[m][n];
                         sumB += b * kernel[m][n];
                     }
                 }
-
-                int avgR = sumR / (kernelWidth * kernelHeight);
-                int avgG = sumG / (kernelWidth * kernelHeight);
-                int avgB = sumB / (kernelWidth * kernelHeight);
-
-                int p = (avgR << 16) | (avgG << 8) | avgB;
-                tempImage.setRGB(i, j, p);
+                sumR /= 9;
+                sumG /= 9;
+                sumB /= 9;
+                int a = 255;
+                int p = (a << 24) | (sumR << 16) | (sumG << 8) | sumB;
+                image.setRGB(i, j, p);
             }
         }
-        return tempImage;
-    }
-
-    /**
-     * Extracts the RGB values of an image and spreads them into single Grayscale values
-     * @return .png file
-     */
-    public static BufferedImage prototypeExtractRGBtoSingleGrayBar(BufferedImage image, int width, int height) {
-        BufferedImage grayImage = new BufferedImage(width * 4, height * 4, BufferedImage.TYPE_BYTE_GRAY);
-        // Extract the RGB values of the image
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                int p = image.getRGB(i, j);
-
-                int a = (p >> 24) & 0xFF;
-                int r = (p >> 16) & 0xFF;
-                int g = (p >> 8) & 0xFF;
-                int b = p & 0xFF;
-
-                // Spread the RGB value into single Grayscale values
-                grayImage.setRGB(i * 4, j * 4, a);
-                grayImage.setRGB(i * 4 + 1, j * 4, r);
-                grayImage.setRGB(i * 4 + 2, j * 4, g);
-                grayImage.setRGB(i * 4 + 3, j * 4, b);
-            }
-        }
-        return grayImage;
-    }
-
-    /**
-     * Mixes the single Grayscale values of an image into a single RGB value
-     * @param image
-     * @param width
-     * @param height
-     * @return
-     */
-    public static BufferedImage prototypeSingleGrayBartoRGB(BufferedImage image, int width, int height) {
-        BufferedImage rgbImage = new BufferedImage(width / 4, height / 4, BufferedImage.TYPE_INT_ARGB);
-        // Extract the RGB values of the image
-        for (int i = 0; i < width; i += 4) {
-            for (int j = 0; j < height; j += 4) {
-                // Fix getting values from grayscale
-                int a = (image.getRGB(i, j));
-                int r = image.getRGB(i + 1, j);
-                int g = image.getRGB(i + 2, j);
-                int b = image.getRGB(i + 3, j);
-
-                int p = (a << 24) | (r << 16) | (g << 8) | b;
-
-                rgbImage.setRGB(i / 4, j / 4, p);
-            }
-        }
-        return rgbImage;
+        return image;
     }
 
     public static void main(String[] args) throws IOException {
@@ -260,12 +201,12 @@ public class ImageProcessor {
         );;
 
         // Reads an image from a file
-        // File inputFile = new File(
-        //     "./image.png" // input file path
-        // );
         File inputFile = new File(
-            "./test.png" // input file path
+            "./image.png" // input file path
         );
+        // File inputFile = new File(
+        //     "./test.png" // input file path
+        // );
         image = ImageIO.read(inputFile);
         System.out.println("Reading complete.");
 
@@ -309,19 +250,26 @@ public class ImageProcessor {
         // // Otsu Threshold
         // image = otsuThreshold(image, width, height);
 
+        // // Convolution
+        image = CNN(image, width, height, new int[][] {
+            { 1, 1, 1 },
+            { 1, 1, 1 },
+            { 1, 1, 1 }
+        });
+
         // // Prototype: Extract RGB to single Grayscale bar
         // image = prototypeExtractRGBtoSingleGrayBar(image, width, height);
 
         // Prototype: Single Grayscale bar to RGB
-        image = prototypeSingleGrayBartoRGB(image, width, height);
+        // image = prototypeSingleGrayBartoRGB(image, width, height);
 
         // Writes an image to a file
-        // File outputFile = new File(
-        //     "./test.png" // output file path
-        // );
         File outputFile = new File(
-            "./test2.png" // output file path
+            "./test.png" // output file path
         );
+        // File outputFile = new File(
+        //     "./test2.png" // output file path
+        // );
         ImageIO.write(image, "png", outputFile);
         System.out.println("Writing complete.");
     }
