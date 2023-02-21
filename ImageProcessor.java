@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 * 6. Threshold To Zero Inverse<br>
 * 7. Otsu Threshold<br>
 * 8. Convolutes the image using CNN with a given kernel<br>
+* 9. Sharpen the image<br>
 * @return .png file
 */
 public class ImageProcessor {
@@ -154,6 +155,10 @@ public class ImageProcessor {
     return image;
     }
 
+    /**
+     * Convolutes a single pixel using CNN with a given kernel
+     * @return output
+     */
     public static double singlePixelConvolution(double[][] input, int x, int y, double[][] kernel) {
         double output = 0;
         for (int i = 0; i < kernel.length; i++) {
@@ -209,6 +214,11 @@ public class ImageProcessor {
             }
         }
         return image;
+    }
+
+    public static BufferedImage sharpen(BufferedImage image, int width, int height) {
+        double[][] kernel = {{-1, -1, -1}, {-1, 9, -1}, {-1, -1, -1}};
+        return CNN(image, width, height, kernel);
     }
 
     /**
@@ -323,12 +333,15 @@ public class ImageProcessor {
         // // Otsu Threshold
         // image = otsuThreshold(image, width, height);
 
-        // Convolution
-        image = CNN(image, width, height, new double[][] {
-            { 0, -1, 0 },
-            { -1, 4, -1 },
-            { 0, -1, 0 }
-        });
+        // // Convolution
+        // image = CNN(image, width, height, new double[][] {
+        //     { 0, -1, 0 },
+        //     { -1, 4, -1 },
+        //     { 0, -1, 0 }
+        // });
+
+        // // Sharpen
+        image = sharpen(image, width, height);
 
         // // Prototype: Extract RGB to single Grayscale bar
         // image = prototypeExtractRGBtoSingleGrayBar(image, width, height);
