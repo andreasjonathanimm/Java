@@ -154,37 +154,57 @@ public class ImageProcessor {
     return image;
     }
 
+    public static double singlePixelConvolution(double[][] input, int x, int y, double[][] kernel) {
+        double output = 0;
+        for (int i = 0; i < kernel.length; i++) {
+            for (int j = 0; j < kernel[0].length; j++) {
+                output += input[x + i][y + j] * kernel[i][j];
+            }
+        }
+        return output;
+    }
+
     /**
      * Convolutes the image using CNN with a given kernel
      * @return .png file
      */
-    public static BufferedImage CNN(BufferedImage image, int width, int height, int[][] kernel) {
-        int kWidth = kernel.length;
-        int kHeight = kernel[0].length;
+    public static BufferedImage CNN(BufferedImage image, int width, int height, double[][] kernel) {
+        double[][] input = new double[width + 2][height + 2];
+        double[][] output = new double[width][height];
 
+        // Extract the RGB values of the image
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                int sumR = 0, sumG = 0, sumB = 0;
-                for (int m = 0; m < kWidth; m++) {
-                    for (int n = 0; n < kHeight; n++) {
-                        int imageI = (i - kWidth / 2 + m + width) % width;
-                        int imageJ = (j - kHeight / 2 + n + height) % height;
-                        int pixel = image.getRGB(imageI, imageJ);
+                int p = image.getRGB(i, j);
 
-                        int r = (pixel >> 16) & 0xFF;
-                        int g = (pixel >> 8) & 0xFF;
-                        int b = pixel & 0xFF;
+                int r = (p >> 16) & 0xFF;
+                int g = (p >> 8) & 0xFF;
+                int b = p & 0xFF;
 
-                        sumR += r * kernel[m][n];
-                        sumG += g * kernel[m][n];
-                        sumB += b * kernel[m][n];
-                    }
-                }
-                sumR /= 9;
-                sumG /= 9;
-                sumB /= 9;
-                int a = 255;
-                int p = (a << 24) | (sumR << 16) | (sumG << 8) | sumB;
+                int avg = (r + g + b) / 3;
+                input[i + 1][j + 1] = avg;
+            }
+        }
+
+        // Convolute the image
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                output[i][j] = singlePixelConvolution(input, i, j, kernel);
+            }
+        }
+
+        // Set the edge values to the image
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int p = image.getRGB(i, j);
+
+                int a = (p >> 24) & 0xFF;
+                int avg = (int) output[i][j];
+                avg = (avg > 255) ? 255 : avg;
+                avg = (avg < 0) ? 0 : avg;
+
+                p = (a << 24) | (avg << 16) | (avg << 8) | avg;
+
                 image.setRGB(i, j, p);
             }
         }
@@ -303,11 +323,11 @@ public class ImageProcessor {
         // // Otsu Threshold
         // image = otsuThreshold(image, width, height);
 
-        // // Convolution
-        image = CNN(image, width, height, new int[][] {
-            { 1, 1, 1 },
-            { 1, 1, 1 },
-            { 1, 1, 1 }
+        // Convolution
+        image = CNN(image, width, height, new double[][] {
+            { 0, -1, 0 },
+            { -1, 4, -1 },
+            { 0, -1, 0 }
         });
 
         // // Prototype: Extract RGB to single Grayscale bar
