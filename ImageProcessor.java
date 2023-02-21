@@ -12,7 +12,10 @@ import javax.imageio.ImageIO;
 * 5. Threshold To Zero<br>
 * 6. Threshold To Zero Inverse<br>
 * 7. Otsu Threshold<br>
-* 8. Convolutes the image using CNN with a given kernel<br>
+* 8. Convolutes the image using CNN with a given kernel:<br>
+* 8.1. Edge Detection<br>
+* 8.2. Sharpen<br>
+* 8.3 Gaussian Blur<br>
 * 9. Sharpen the image<br>
 * @return .png file
 */
@@ -297,38 +300,38 @@ public class ImageProcessor {
         width = image.getWidth();
         height = image.getHeight();
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                int p = image.getRGB(i, j);
+        // for (int i = 0; i < width; i++) {
+        //     for (int j = 0; j < height; j++) {
+        //         int p = image.getRGB(i, j);
 
-                int a = (p >> 24) & 0xFF;
-                int r = (p >> 16) & 0xFF;
-                int g = (p >> 8) & 0xFF;
-                int b = p & 0xFF;
+        //         int a = (p >> 24) & 0xFF;
+        //         int r = (p >> 16) & 0xFF;
+        //         int g = (p >> 8) & 0xFF;
+        //         int b = p & 0xFF;
 
-                // Turn RGB to Grayscale
-                // r = g = b = toGrayScale(r, g, b);
+        //         // Turn RGB to Grayscale
+        //         // r = g = b = toGrayScale(r, g, b);
 
-                // Threshold Binary
-                // r = g = b = thresholdBinary(r, g, b, 100, 255);
+        //         // Threshold Binary
+        //         // r = g = b = thresholdBinary(r, g, b, 100, 255);
 
-                // Threshold Binary Inverse
-                // r = g = b = thresholdBinaryInverse(r, g, b, 100, 255);
+        //         // Threshold Binary Inverse
+        //         // r = g = b = thresholdBinaryInverse(r, g, b, 100, 255);
 
-                // Threshold Truncate
-                // r = g = b = thresholdTruncate(r, g, b, 100);
+        //         // Threshold Truncate
+        //         // r = g = b = thresholdTruncate(r, g, b, 100);
 
-                // Threshold To Zero
-                // r = g = b = thresholdToZero(r, g, b, 100);
+        //         // Threshold To Zero
+        //         // r = g = b = thresholdToZero(r, g, b, 100);
 
-                // Threshold to Zero Inverse
-                // r = g = b = thresholdToZeroInverse(r, g, b, 100);
+        //         // Threshold to Zero Inverse
+        //         // r = g = b = thresholdToZeroInverse(r, g, b, 100);
 
-                // Set new RGB value
-                p = ((a) << 24) | (r << 16) | (g << 8) | b;
-                image.setRGB(i, j, p);
-            }
-        }
+        //         // Set new RGB value
+        //         p = ((a) << 24) | (r << 16) | (g << 8) | b;
+        //         image.setRGB(i, j, p);
+        //     }
+        // }
 
         // // Otsu Threshold
         // image = otsuThreshold(image, width, height);
@@ -339,6 +342,13 @@ public class ImageProcessor {
         //     { -1, 4, -1 },
         //     { 0, -1, 0 }
         // });
+
+        // // Gaussian Blur
+        image = CNN(image, width, height, new double[][] {
+            { 1, -2, 1 },
+            { -2, 4, -2 },
+            { 1, -2, 1 }
+        });
 
         // // Sharpen
         image = sharpen(image, width, height);
